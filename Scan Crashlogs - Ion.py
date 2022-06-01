@@ -66,6 +66,7 @@ for file in inputfiles:
     crash_log: str = file.read_text(encoding="utf-8", errors="ignore")
     
     datadict: dict[str, int] = {}
+    """Part 1"""
     datadict["UnlimitedSurvivalMode"] = crash_log.count("UnlimitedSurvivalMode.dll")
     datadict["B4Achivements"] = crash_log.count("Achievements: true")
     datadict["B4MemoryManagement"] = crash_log.count("MemoryManager: true")
@@ -74,11 +75,63 @@ for file in inputfiles:
     datadict["AchivementsDLL"] = crash_log.count("achievements.dll")
     datadict["Baka"] = crash_log.count("BakaScrapHeap.dll")
     
+    """Part 2"""
+    datadict["0x0"] = crash_log.count("0x000000000000")
+    datadict["Anim1"] = crash_log.count("hkbVariableBindingSet")
+    datadict["Anim2"] = crash_log.count("hkbHandIkControlsModifier")
+    datadict["Anim3"] = crash_log.count("hkbBehaviorGraph")
+    datadict["Anim4"] = crash_log.count("hkbModifierList")
+    datadict["Cathedral1"] = crash_log.count("DefaultTexture_Black")
+    datadict["Cathedral2"] = crash_log.count("NiAlphaProperty")
+    datadict["CBP"] = crash_log.count("cbp.dll")
+    datadict["Console1"] = crash_log.count("SysWindowCompileAndRun")
+    datadict["Console2"] = crash_log.count("BSResourceNiBinaryStream")
+    datadict["Console3"] = crash_log.count("ConsoleLogPrinter")
+    datadict["d3d11"] = crash_log.count("d3d11.dll")
+    datadict["DLCBanner01"] = crash_log.count("DLCBannerDLC01.dds")
+    datadict["DLCBanner05"] = crash_log.count("DLCBanner05.dds")
+    datadict["flexRelease_x64"] = crash_log.count("flexRelease_x64.dll")
+    datadict["Gamebryo"] = crash_log.count("GamebryoSequenceGenerator")
+    datadict["LooseFileAsync"] = crash_log.count("LooseFileAsyncStream")
+    datadict["LooseFileStream"] = crash_log.count("LooseFileStream")
+    datadict["MCM1"] = crash_log.count("FaderData")
+    datadict["MCM2"] = crash_log.count("FaderMenu")
+    datadict["MCM3"] = crash_log.count("UIMessage")
+    datadict["nvwgf2umx"] = crash_log.count("nvwgf2umx.dll")
+    datadict["Overflow"] = crash_log.count("EXCEPTION_STACK_OVERFLOW")
+    datadict["Papyrus1"] = crash_log.count("Papyrus")
+    datadict["Papyrus2"] = crash_log.count("VirtualMachine")
+    datadict["Particle"] = crash_log.count("ParticleSystem")
+    datadict["Pathing1"] = crash_log.count("PathingCell")
+    datadict["Pathing2"] = crash_log.count("BSPathBuilder")
+    datadict["Pathing3"] = crash_log.count("PathManagerServer")
+    datadict["Plugin1"] = crash_log.count("ObjectBindPolicy")
+    datadict["Plugin2"] = crash_log.count("BSMemStorage")
+    datadict["Plugin3"] = crash_log.count("DataFileHandleReaderWriter")
+    datadict["Power1"] = crash_log.count("GridAdjacencyMapNode")
+    datadict["Power2"] = crash_log.count("PowerUtils")
+    datadict["skeleton"] = crash_log.count("skeleton.nif")
+    datadict["tbbmalloc"] = crash_log.count("tbbmalloc.dll")
+    datadict["Texture1"] = crash_log.count("Create2DTexture")
+    datadict["Texture2"] = crash_log.count("DefaultTexture")
+    datadict["X3DAudio1_7"] = crash_log.count("X3DAudio1_7.dll")
+    datadict["XAudio2_7"] = crash_log.count("XAudio2_7.dll")
+    
+    """Part 3"""
+    datadict["LoadOrder"] = crash_log.count("[00]")
+    datadict["Unofficial"] = crash_log.count("Unofficial")
+    datadict["CHW"] = crash_log.count("ClassicHolsteredWeapons")
+    datadict["UniquePlayer"] = crash_log.count("UniquePlayer.esp")
+    datadict["BodyNIF"] = crash_log.count("Body.nif")
+    datadict["HighHeels"] = crash_log.count("HHS.dll")
+    datadict["FallSouls"] = crash_log.count("FallSouls.dll")
+    datadict["F4SE"] = crash_log.count("f4se_1_10_163.dll")
+    
     if not commandline.json and not outpath.exists():
         with outpath.open("a", encoding="utf-8", errors="ignore") as w:
             w.write(f"""{file.name}
             This crash log was automatically scanned.
-            VER 2.1 | MIGHT CONTAIN FALSE POSITIVES.
+            VER Ion-1.0 | MIGHT CONTAIN FALSE POSITIVES.
             ===================================================="""
             )
             """Config File Checks"""
@@ -116,54 +169,6 @@ for file in inputfiles:
             """It's a Trap!!! Part 1 (Known Crash Messages)"""
             ItsATrap1 = False
 
-            datadict["0x0"] = crash_log.count("0x000000000000")
-            datadict["Anim1"] = crash_log.count("hkbVariableBindingSet")
-            datadict["Anim2"] = crash_log.count("hkbHandIkControlsModifier")
-            datadict["Anim3"] = crash_log.count("hkbBehaviorGraph")
-            datadict["Anim4"] = crash_log.count("hkbModifierList")
-            datadict["Cathedral1"] = crash_log.count("DefaultTexture_Black")
-            datadict["Cathedral2"] = crash_log.count("NiAlphaProperty")
-            datadict["CBP"] = crash_log.count("cbp.dll")
-            datadict["Console1"] = crash_log.count("SysWindowCompileAndRun")
-            datadict["Console2"] = crash_log.count("BSResourceNiBinaryStream")
-            datadict["Console3"] = crash_log.count("ConsoleLogPrinter")
-            datadict["d3d11"] = crash_log.count("d3d11.dll")
-            datadict["DLCBanner01"] = crash_log.count("DLCBannerDLC01.dds")
-            datadict["DLCBanner05"] = crash_log.count("DLCBanner05.dds")
-            datadict["flexRelease_x64"] = crash_log.count("flexRelease_x64.dll")
-            datadict["Gamebryo"] = crash_log.count("GamebryoSequenceGenerator")
-            datadict["LooseFileAsync"] = crash_log.count("LooseFileAsyncStream")
-            datadict["LooseFileStream"] = crash_log.count("LooseFileStream")
-            datadict["MCM1"] = crash_log.count("FaderData")
-            datadict["MCM2"] = crash_log.count("FaderMenu")
-            datadict["MCM3"] = crash_log.count("UIMessage")
-            datadict["nvwgf2umx"] = crash_log.count("nvwgf2umx.dll")
-            datadict["Overflow"] = crash_log.count("EXCEPTION_STACK_OVERFLOW")
-            datadict["Papyrus1"] = crash_log.count("Papyrus")
-            datadict["Papyrus2"] = crash_log.count("VirtualMachine")
-            datadict["Particle"] = crash_log.count("ParticleSystem")
-            datadict["Pathing1"] = crash_log.count("PathingCell")
-            datadict["Pathing2"] = crash_log.count("BSPathBuilder")
-            datadict["Pathing3"] = crash_log.count("PathManagerServer")
-            datadict["Plugin1"] = crash_log.count("ObjectBindPolicy")
-            datadict["Plugin2"] = crash_log.count("BSMemStorage")
-            datadict["Plugin3"] = crash_log.count("DataFileHandleReaderWriter")
-            datadict["Power1"] = crash_log.count("GridAdjacencyMapNode")
-            datadict["Power2"] = crash_log.count("PowerUtils")
-            datadict["skeleton"] = crash_log.count("skeleton.nif")
-            datadict["tbbmalloc"] = crash_log.count("tbbmalloc.dll")
-            datadict["Texture1"] = crash_log.count("Create2DTexture")
-            datadict["Texture2"] = crash_log.count("DefaultTexture")
-            datadict["X3DAudio1_7"] = crash_log.count("X3DAudio1_7.dll")
-            datadict["XAudio2_7"] = crash_log.count("XAudio2_7.dll")
-            """datadict["LoadOrder"] = crash_log.count("[00]")
-            datadict["Unofficial"] = crash_log.count("Unofficial")
-            datadict["CHW"] = crash_log.count("ClassicHolsteredWeapons")
-            datadict["UniquePlayer"] = crash_log.count("UniquePlayer.esp")
-            datadict["BodyNIF"] = crash_log.count("Body.nif")
-            datadict["HighHeels"] = crash_log.count("HHS.dll")
-            datadict["FallSouls"] = crash_log.count("FallSouls.dll")
-            datadict["F4SE"] = crash_log.count("f4se_1_10_163.dll")"""
 
             if datadict["Overflow"] >= 1:
                 w.write(
@@ -214,34 +219,19 @@ for file in inputfiles:
                 w.write("Checking for Audio Driver Crash...........All Clear")
 
             if datadict["CBP"] >= 3 or datadict["skeleton"] >= 1:
-                if datadict["CBP"] >= 3:
-                    w.write(
-                        f'''Checking for Body Physics Crash...........CULPRIT FOUND, cbp.dll!
-                        > Priority Level: [4] | Detected number of cbp.dll : {datadict["CBP"]}'''
-                    )
-                    ItsATrap1 = True
-            
-                if datadict["skeleton"] >= 1 and datadict["CBP"] < 3:
-                    w.write(
-                        f'''Checking for Body Physics Crash...........CULPRIT FOUND, skeleton.nif!
-                        > Priority Level: [4] | Detected number of skeleton.nif {datadict["skeleton"]}'''
-                    )
-                    ItsATrap1=True
-
-                if datadict["CBP"] >= 3 and datadict["skeleton"] >= 1:
-                    w.write(
-                        f'''Checking for Body Physics Crash...........CULPRIT FOUND, cbp.dll and skeleton.nif!
-                        > Priority Level: [4] | Detected number of cbp.dll | skeleton.nif : {datadict["CBP"]} | {datadict["skeleton"]}'''
-                        )
-                    ItsATrap1 = True
+                w.write(
+                f'''Checking for Body Physics Crash...........CULPRIT FOUND!
+                > Priority Level: [4] | Detected number of cbp.dll | skeleton.nif : {datadict["CBP"]} | {datadict["skeleton"]}'''
+                )
+                ItsATrap1 = True
             else:
                 w.write("Checking for Body Physics Crash...........All Clear")
-
-        if datadict["DLCBanner05"] >= 1:
-            w.write(
-                f'''Checking for Invalidation Crash...........CULPRIT FOUND!
-                > Priority Level: [5] | Detected number of DLCBanner05.dds : {datadict["DLCBanner05"]}'''
-            )
-            ItsATrap1 = True
-        else:
-            w.write("Checking for Invalidation Crash...........All Clear")
+            
+            if datadict["DLCBanner05"] >= 1:
+                w.write(
+                    f'''Checking for Invalidation Crash...........CULPRIT FOUND!
+                    > Priority Level: [5] | Detected number of DLCBanner05.dds : {datadict["DLCBanner05"]}'''
+                    )
+                ItsATrap1 = True
+            else:
+                w.write("Checking for Invalidation Crash...........All Clear")
