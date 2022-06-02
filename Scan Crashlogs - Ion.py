@@ -38,7 +38,7 @@ parser.add_argument(
     nargs="?",
     type=pathlib.Path,
     action="append",
-    help="Specify a specific file to parse (optional), use multiple times for multiple files, will scan all log files in current directory otherwise."
+    help="Specify a specific file to parse (optional), use multiple times for multiple files, will scan all unscanned log files in current directory otherwise."
 )
 
 commandline: argparse.Namespace = parser.parse_args()
@@ -51,10 +51,6 @@ else:
 for file in inputfiles:
     all_lines: list = f.readlines()
     crash_log: str = file.read_text(encoding="utf-8", errors="ignore")
-    if commandline.json:
-        outpath: pathlib.Path = pathlib.Path(str(file).replace(file.suffix, ".json"))
-    else:
-        outpath: pathlib.Path = pathlib.Path(str(file).replace(file.suffix, "-AUTOSCAN.txt"))
     with file.open("r", encoding="utf-8", errors="ignore") as f:
         b4_latest: str = "Buffout 4 v1.24.5"
         b4_ver: str = all_lines[1].strip()
@@ -63,7 +59,16 @@ for file in inputfiles:
         if b4_ver.casefold() != b4_latest.casefold():
             print(f"Skipping {str(file.resolve())} because it was not generated with {b4_latest}")
             continue
+    
+    if commandline.json:
+        outpath: pathlib.Path = pathlib.Path(str(file).replace(file.suffix, ".json"))
+    else:
+        outpath: pathlib.Path = pathlib.Path(str(file).replace(file.suffix, "-AUTOSCAN.txt"))
 
+    if outpath.exists():
+        print("Output file already exists, delete the output file if you want it rescanned.")
+        continue
+    
     datadict: dict[str, int] = {}
     """Part 1"""
     datadict["UnlimitedSurvivalMode"] = crash_log.count("UnlimitedSurvivalMode.dll")
@@ -126,7 +131,8 @@ for file in inputfiles:
     datadict["FallSouls"] = crash_log.count("FallSouls.dll")
     datadict["F4SE"] = crash_log.count("f4se_1_10_163.dll")
 
-    if not commandline.json and not outpath.exists():
+
+    if not commandline.json:
 
         with outpath.open("a", encoding="utf-8", errors="ignore") as w:
             w.write(f"""{file.name}
