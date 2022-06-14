@@ -6,8 +6,7 @@ import random
 import pathlib
 import argparse
 
-from dataclasses import dataclass, asdict, InitVar
-from tkinter.tix import Tree
+from dataclasses import dataclass, asdict, InitVar, field
 
 random_hints: dict[int, str] = {1: "Random Hint: [Ctrl] + [F] is a handy-dandy key combination. You should use it more often. Please.",
                                 2: "Random Hint: When necessary, make sure that crashes are consistent or repeatable, since in rare cases they aren't.",
@@ -23,7 +22,7 @@ print("PERFORMING SCAN..........................................................
 
 which_hint = random_hints[random.randrange(1, 8)]
 
-parser = argparse.ArguementParser(
+parser = argparse.ArgumentParser(
     description="Parser script for Buffout4 Crash Logs"
 )
 parser.add_argument(
@@ -31,7 +30,6 @@ parser.add_argument(
     '-i',
     dest="input",
     nargs="?",
-    type=pathlib.Path,
     action="append",
     help="Specify a specific file to parse (optional), use multiple times for multiple files, will scan all unscanned log files in current directory otherwise."
 )
@@ -40,170 +38,180 @@ commandline: argparse.Namespace = parser.parse_args()
 b4_latest: str = "Buffout 4 v1.26.2"
 
 """Using Data Classes instead of variables"""
+
+if commandline.input and len(commandline.input) >= 1:
+    inputfiles: list[pathlib.Path] = []
+    for i in commandline.input:
+        inputfiles.append(pathlib.path(i))
+else:
+    inputfiles: list[pathlib.Path] = pathlib.Path.cwd().glob("./crash-*.log")
+for i in inputfiles:
+    print(i)
+
+
 @dataclass
 class Counts:
-    unlimitedsurvivalmode: int
-    b4achievements: int
-    b4memorymanagement: int
-    b4looksmenucompat: int
-    looksmenuplugin: int
-    achievementsdll: int
-    baka: int
-    zeroxzero: int
-    anim1: int
-    anim2: int
-    anim3: int
-    anim4: int
-    cathedrial1: int
-    cathedrial2: int
-    cbpdll: int
-    console1: int
-    console2: int
-    console3: int
-    d3d11: int
-    dlcbanner01: int
-    dlcbanner05: int
-    flexrelease_x64: int
-    gamebryo: int
-    loosefileasync: int
-    loosefilestream: int
-    mcm1: int
-    mcm2: int
-    mcm3: int
-    nvwgf2umx: int
-    overflow: int
-    papyrus1: int
-    papyrus2: int
-    particle: int
-    pathing1: int
-    pathing2: int
-    pathing3: int
-    plugin1: int
-    plugin2: int
-    plugin3: int
-    power1: int
-    power2: int
-    skeleton: int
-    texture1: int
-    texture2: int
-    x3daudio1_7: int
-    xaudio2_7: int
-    loadorder: int
-    unofficialpatch: int
-    classicholsteredweapons: int
-    uniqueplayer: int
-    bodynif: int
-    highheels: int
-    fallsouls: int
-    f4se: int
+    unlimitedsurvivalmode: int = 0
+    b4achievements: int = 0
+    b4memorymanagement: int = 0
+    b4looksmenucompat: int = 0
+    looksmenuplugin: int = 0
+    achievementsdll: int = 0
+    baka: int = 0
+    zeroxzero: int = 0
+    anim1: int = 0
+    anim2: int = 0
+    anim3: int = 0
+    anim4: int = 0
+    cathedrial1: int = 0
+    cathedrial2: int = 0
+    cbpdll: int = 0
+    console1: int = 0
+    console2: int = 0
+    console3: int = 0
+    d3d11: int = 0
+    dlcbanner01: int = 0
+    dlcbanner05: int = 0
+    flexrelease_x64: int = 0
+    gamebryo: int = 0
+    loosefileasync: int = 0
+    loosefilestream: int = 0
+    mcm1: int = 0
+    mcm2: int = 0
+    mcm3: int = 0
+    nvwgf2umx: int = 0
+    overflow: int = 0
+    papyrus1: int = 0
+    papyrus2: int = 0
+    particle: int = 0
+    pathing1: int = 0
+    pathing2: int = 0
+    pathing3: int = 0
+    plugin1: int = 0
+    plugin2: int = 0
+    plugin3: int = 0
+    power1: int = 0
+    power2: int = 0
+    skeleton: int = 0
+    texture1: int = 0
+    texture2: int = 0
+    x3daudio1_7: int = 0
+    xaudio2_7: int = 0
+    loadorder: int = 0
+    unofficialpatch: int = 0
+    classicholsteredweapons: int = 0
+    uniqueplayer: int = 0
+    bodynif: int = 0
+    highheels: int = 0
+    fallsouls: int = 0
+    f4se: int = 0
 
 
 @dataclass
 class Data:
-    counts: Counts
-    lines: list[str]
-    log: str
-    achievementsconfig: bool
-    memorymanagement: bool
-    looksmenucompat: bool
-    overflow: bool
-    nvidiadriver: bool
-    weapondebris: bool
-    renderdriver: bool
-    audiodriver: bool
-    bodyphysics: bool
-    invalidation: bool
-    gridscrap: bool
-    loadorder: bool
-    dlcbanner01: bool
-    zerocrash: bool
-    cao_crash: bool
-    mcm_crash: bool
-    tbbmalloc_missing: bool
-    generic_crash: bool
-    papyrus: str | bool
-    archivelimit: bool
-    pathing: bool
-    objectmodel: bool
-    pluginlimit: bool
-    consolecommand: bool
-    particles: bool
-    weapon_animations: bool
-    corrupted_texture: bool
-    no_plugin_list: bool
-    no_unofficial_patch: bool
-    detectedplugins: list[str]
-    detectedformids: list[str]
-    allplugins: list[str]
-    onlyids: list[str]
-    logfile: InitVar[pathlib.Path] = None
-    """"""
-    def __post_init__(self):
-        self.counts: Counts = Counts()
-        with self.file.open("r", encoding="utf-8", errors="ignore") as crash_log:
-            """Part 1"""
-            self.counts.unlimitedsurvivalmode = crash_log.count("UnlimitedSurvivalMode.dll")
-            self.counts.b4achievements = crash_log.count("Achievements: true")
-            self.counts.b4memorymanagement = crash_log.count("MemoryManager: true")
-            self.counts.b4looksmenucompat = crash_log.count("F4EE: false")
-            self.counts.looksmenuplugin = crash_log.count("f4ee.dll")
-            self.counts.achievementsdll = crash_log.count("achievements.dll")
-            self.counts.baka = crash_log.count("BakaScrapHeap.dll")
+    counts: Counts = Counts()
+    lines: list[str] = field(default_factory=list)
+    log: str = ""
+    achievementsconfig: bool = False
+    memorymanagement: bool = False
+    looksmenucompat: bool = False
+    overflow: bool = False
+    nvidiadriver: bool = False
+    weapondebris: bool = False
+    renderdriver: bool = False
+    audiodriver: bool = False
+    bodyphysics: bool = False
+    invalidation: bool = False
+    gridscrap: bool = False
+    loadorder: bool = False
+    dlcbanner01: bool = False
+    zerocrash: bool = False
+    cao_crash: bool = False
+    mcm_crash: bool = False
+    tbbmalloc_missing: bool = False
+    generic_crash: bool = False
+    papyrus: str | bool = False
+    archivelimit: bool = False
+    pathing: bool = False
+    objectmodel: bool = False
+    pluginlimit: bool = False
+    consolecommand: bool = False
+    particles: bool = False
+    weapon_animations: bool = False
+    corrupted_texture: bool = False
+    no_plugin_list: bool = False
+    no_unofficial_patch: bool = False
+    detectedplugins: list[str] = field(default_factory=list)
+    detectedformids: list[str] = field(default_factory=list)
+    allplugins: list[str] = field(default_factory=list)
+    onlyids: list[str] = field(default_factory=list)
+    logfile: InitVar[pathlib.Path] | InitVar[None] = None
 
-            """Part 2"""
-            self.counts.zeroxzero = crash_log.count("0x000000000000")
-            self.counts.anim1 = crash_log.count("hkbVariableBindingSet")
-            self.counts.anim2 = crash_log.count("hkbHandIkControlsModifier")
-            self.counts.anim3 = crash_log.count("hkbBehaviorGraph")
-            self.counts.anim4 = crash_log.count("hkbModifierList")
-            self.counts.cathedrial1 = crash_log.count("DefaultTexture_Black")
-            self.counts.cathedrial2 = crash_log.count("NiAlphaProperty")
-            self.counts.cbpdll = crash_log.count("cbp.dll")
-            self.counts.console1 = crash_log.count("SysWindowCompileAndRun")
-            self.counts.console2 = crash_log.count("BSResourceNiBinaryStream")
-            self.counts.console3 = crash_log.count("ConsoleLogPrinter")
-            self.counts.d3d11 = crash_log.count("d3d11.dll")
-            self.counts.dlcbanner01 = crash_log.count("DLCBannerDLC01.dds")
-            self.counts.dlcbanner05 = crash_log.count("DLCBanner05.dds")
-            self.counts.flexrelease_x64 = crash_log.count("flexRelease_x64.dll")
-            self.counts.gamebryo = crash_log.count("GamebryoSequenceGenerator")
-            self.counts.loosefileasync = crash_log.count("LooseFileAsyncStream")
-            self.counts.loosefilestream = crash_log.count("LooseFileStream")
-            self.counts.mcm1 = crash_log.count("FaderData")
-            self.counts.mcm2 = crash_log.count("FaderMenu")
-            self.counts.mcm3 = crash_log.count("UIMessage")
-            self.counts.nvwgf2umx = crash_log.count("nvwgf2umx.dll")
-            self.counts.overflow = crash_log.count("EXCEPTION_STACK_OVERFLOW")
-            self.counts.papyrus1 = crash_log.count("Papyrus")
-            self.counts.papyrus2 = crash_log.count("VirtualMachine")
-            self.counts.particle = crash_log.count("ParticleSystem")
-            self.counts.pathing1 = crash_log.count("PathingCell")
-            self.counts.pathing2 = crash_log.count("BSPathBuilder")
-            self.counts.pathing3 = crash_log.count("PathManagerServer")
-            self.counts.plugin1 = crash_log.count("ObjectBindPolicy")
-            self.counts.plugin2 = crash_log.count("BSMemStorage")
-            self.counts.plugin3 = crash_log.count("DataFileHandleReaderWriter")
-            self.counts.power1 = crash_log.count("GridAdjacencyMapNode")
-            self.counts.power2 = crash_log.count("PowerUtils")
-            self.counts.skeleton = crash_log.count("skeleton.nif")
-            self.counts.texture1 = crash_log.count("Create2DTexture")
-            self.counts.texture2 = crash_log.count("DefaultTexture")
-            self.counts.x3daudio1_7 = crash_log.count("X3DAudio1_7.dll")
-            self.counts.xaudio2_7 = crash_log.count("XAudio2_7.dll")
+    def __post_init__(self, logfile: pathlib.Path):
+        self.log = logfile.read_text()
 
-            """Part 3"""
-            self.counts.loadorder = crash_log.count("[00]")
-            self.counts.unofficialpatch = crash_log.count("Unofficial")
-            self.counts.classicholsteredweapons = crash_log.count("ClassicHolsteredWeapons")
-            self.counts.uniqueplayer = crash_log.count("UniquePlayer.esp")
-            self.counts.bodynif = crash_log.count("Body.nif")
-            self.counts.highheels = crash_log.count("HHS.dll")
-            self.counts.fallsouls = crash_log.count("FallSouls.dll")
-            self.counts.f4se = crash_log.count("f4se_1_10_163.dll")
+        """Part 1"""
+        self.counts.unlimitedsurvivalmode = self.log.count("UnlimitedSurvivalMode.dll")
+        self.counts.b4achievements = self.log.count("Achievements: true")
+        self.counts.b4memorymanagement = self.log.count("MemoryManager: true")
+        self.counts.b4looksmenucompat = self.log.count("F4EE: false")
+        self.counts.looksmenuplugin = self.log.count("f4ee.dll")
+        self.counts.achievementsdll = self.log.count("achievements.dll")
+        self.counts.baka = self.log.count("BakaScrapHeap.dll")
 
-            self.lines = crash_log.readlines()
-        
-        self.log = file.read_text()
+        """Part 2"""
+        self.counts.zeroxzero = self.log.count("0x000000000000")
+        self.counts.anim1 = self.log.count("hkbVariableBindingSet")
+        self.counts.anim2 = self.log.count("hkbHandIkControlsModifier")
+        self.counts.anim3 = self.log.count("hkbBehaviorGraph")
+        self.counts.anim4 = self.log.count("hkbModifierList")
+        self.counts.cathedrial1 = self.log.count("DefaultTexture_Black")
+        self.counts.cathedrial2 = self.log.count("NiAlphaProperty")
+        self.counts.cbpdll = self.log.count("cbp.dll")
+        self.counts.console1 = self.log.count("SysWindowCompileAndRun")
+        self.counts.console2 = self.log.count("BSResourceNiBinaryStream")
+        self.counts.console3 = self.log.count("ConsoleLogPrinter")
+        self.counts.d3d11 = self.log.count("d3d11.dll")
+        self.counts.dlcbanner01 = self.log.count("DLCBannerDLC01.dds")
+        self.counts.dlcbanner05 = self.log.count("DLCBanner05.dds")
+        self.counts.flexrelease_x64 = self.log.count("flexRelease_x64.dll")
+        self.counts.gamebryo = self.log.count("GamebryoSequenceGenerator")
+        self.counts.loosefileasync = self.log.count("LooseFileAsyncStream")
+        self.counts.loosefilestream = self.log.count("LooseFileStream")
+        self.counts.mcm1 = self.log.count("FaderData")
+        self.counts.mcm2 = self.log.count("FaderMenu")
+        self.counts.mcm3 = self.log.count("UIMessage")
+        self.counts.nvwgf2umx = self.log.count("nvwgf2umx.dll")
+        self.counts.overflow = self.log.count("EXCEPTION_STACK_OVERFLOW")
+        self.counts.papyrus1 = self.log.count("Papyrus")
+        self.counts.papyrus2 = self.log.count("VirtualMachine")
+        self.counts.particle = self.log.count("ParticleSystem")
+        self.counts.pathing1 = self.log.count("PathingCell")
+        self.counts.pathing2 = self.log.count("BSPathBuilder")
+        self.counts.pathing3 = self.log.count("PathManagerServer")
+        self.counts.plugin1 = self.log.count("ObjectBindPolicy")
+        self.counts.plugin2 = self.log.count("BSMemStorage")
+        self.counts.plugin3 = self.log.count("DataFileHandleReaderWriter")
+        self.counts.power1 = self.log.count("GridAdjacencyMapNode")
+        self.counts.power2 = self.log.count("PowerUtils")
+        self.counts.skeleton = self.log.count("skeleton.nif")
+        self.counts.texture1 = self.log.count("Create2DTexture")
+        self.counts.texture2 = self.log.count("DefaultTexture")
+        self.counts.x3daudio1_7 = self.log.count("X3DAudio1_7.dll")
+        self.counts.xaudio2_7 = self.log.count("XAudio2_7.dll")
+
+        """Part 3"""
+        self.counts.loadorder = self.log.count("[00]")
+        self.counts.unofficialpatch = self.log.count("Unofficial")
+        self.counts.classicholsteredweapons = self.log.count("ClassicHolsteredWeapons")
+        self.counts.uniqueplayer = self.log.count("UniquePlayer.esp")
+        self.counts.bodynif = self.log.count("Body.nif")
+        self.counts.highheels = self.log.count("HHS.dll")
+        self.counts.fallsouls = self.log.count("FallSouls.dll")
+        self.counts.f4se = self.log.count("f4se_1_10_163.dll")
+
+        with self.logfile.open("r", encoding="utf-8", errors="ignore") as r:
+            self.lines = r.readlines()
 
     def is_bad_mod(self, line: str, modname: str) -> bool:
         if "FE:" in line and modname in line:
@@ -218,18 +226,13 @@ class Data:
             return f"FOUND {line[0:9]} {modname.capitalize()}!"
         elif "File:" not in line and modshortname in line:
             return f"FOUND {line[0:5]} {modname.capitalize()}!"
-    
+
     def write_bad_mod_opc(self, line: str, modname: str) -> str:
         if "FE:" in line and modname in line:
             return f"FOUND {line[0:9]} {modname}!"
         elif "File:" not in line and modname in line:
             return f"FOUND {line[0:5]} {modname}!"
-        
 
-if len(commandline.input) >= 1:
-    inputfiles: list[pathlib.Path] = commandline.input
-else:
-    inputfiles: list[pathlib.Path] = pathlib.Path.cwd().glob("./crash-*.log")
 
 for file in inputfiles:
     data = Data(logfile=file)
@@ -251,13 +254,13 @@ for file in inputfiles:
         print("The output file for this crashdump already exists and is not empty, delete the existing file if you want this log to be scanned.")
         continue
 
-    with file.open("a", encoding="utf-8", errors="ignore") as w:
+    with outpath.open("w", encoding="utf-8", errors="ignore") as w:
         w.write("This crash log was automatically scanned.")
         w.write("VER 1.0-Ion Beta | MIGHT CONTAIN FALSE POSITIVES.")
         w.write("====================================================")
         w.write(f"Main Error: {b4_error}")
         w.write("====================================================")
-        
+
         w.write("====================================================")
         w.write("CHECKING IF BUFFOUT4.TOML PARAMETERS ARE CORRECT...")
         w.write("====================================================")
@@ -269,7 +272,7 @@ for file in inputfiles:
         else:
             w.write("Achievements parameter is correctly configured.")
             w.write("-----")
-        
+
         if data.counts.b4memorymanagement and data.counts.baka:
             w.write("Baka ScrapHeap is installed, but MemoryManager parameter is set to TRUE")
             w.write("Open Buffout4.toml and change MemoryManager parameter to FALSE, this prevents conflicts with Buffout 4.")
@@ -278,7 +281,7 @@ for file in inputfiles:
         else:
             w.write("Memory Manager parameter is correctly configured.")
             w.write("-----")
-        
+
         if data.counts.looksmenuplugin and data.counts.b4looksmenucompat:
             w.write("Looks Menu is installed, but F4EE parameter under [Compatibility] is set to FALSE")
             w.write("Open Buffout4.toml and change F4EE parameter to TRUE, this prevents bugs and crashes from Looks Menu.")
@@ -286,7 +289,7 @@ for file in inputfiles:
         else:
             w.write("Looks Menu (F4EE) parameter is correctly configured.")
             w.write("-----")
-        
+
         w.write("====================================================")
         w.write("CHECKING IF LOG MATCHES ANY KNOWN CRASH MESSAGES...")
         w.write("====================================================")
@@ -298,7 +301,7 @@ for file in inputfiles:
             ItsATrap1 = True
         else:
             w.write("Checking for Stack Overflow Crash.........All Clear")
-        
+
         if data.counts.nvwgf2umx >= 3:
             w.write("Checking for Nvidia Driver Crash..........CULPRIT FOUND!")
             w.write(f"> Priority Level: [5] | Detected number of nvwgf2umx.dll : {data.counts.nvwgf2umx}")
@@ -312,7 +315,7 @@ for file in inputfiles:
             ItsATrap1 = True
         else:
             w.write("Checking for Weapon Debris Crash..........All Clear")
-        
+
         if data.counts.d3d11 >= 3:
             w.write("Checking for Render Driver Crash..........CULPRIT FOUND!")
             w.write(f"> Priority Level: [4] | Detected number of d3d11.dll : {data.counts.d3d11}")
@@ -326,28 +329,28 @@ for file in inputfiles:
             ItsATrap1 = True
         else:
             w.write("Checking for Audio Driver Crash...........All Clear")
-        
+
         if data.counts.cbpdll >= 3 or data.counts.skeleton:
             w.write("Checking for Body Physics Crash...........CULPRIT FOUND!")
             w.write(f"> Priority Level: [4] | Detected number of cbp.dll | skeleton.nif : {data.counts.cbpdll} | {data.counts.skeleton}")
             ItsATrap1 = True
         else:
             w.write("Checking for Body Physics Crash...........All Clear")
-        
+
         if data.counts.dlcbanner05:
             w.write("Checking for Invalidation Crash...........CULPRIT FOUND!")
             w.write(f"> Priority Level: [5] | Detected number of DLCBanner05.dds : {data.counts.dlcbanner05}")
             ItsATrap1 = True
         else:
             w.write("Checking for Invalidation Crash...........All Clear")
-        
+
         if data.counts.power1 or data.counts.power2:
             w.write("Checking for Grid Scrap Crash.............CULPRIT FOUND!")
             w.write(f"> Priority Level: [5] | Detected number of GridAdjacencyMapNode | PowerUtils : {data.counts.power1} | {data.counts.power2}")
             ItsATrap1 = True
         else:
             w.write("Checking for Grid Scrap Crash.............All Clear")
-        
+
         if data.counts.gamebryo:
             w.write("Checking for Load Order Crash.............CULPRIT FOUND!")
             w.write(f"> Priority Level: [5] | Detected number of GamebryoSequenceGenerator : {data.counts.gamebryo}")
@@ -376,7 +379,7 @@ for file in inputfiles:
             ItsATrap1 = True
         else:
             w.write("Checking for 0x0 (Zero Crash).............All Clear")
-        
+
         if data.counts.cathedrial1 or data.counts.cathedrial2:
             w.write("Checking for CAO Crash....................CULPRIT FOUND!")
             w.write(f"> Priority Level: [3] | Detected number of DefaultTexture_Black | NiAlphaProperty : {data.counts.cathedrial1} | {data.counts.cathedrial2}")
@@ -390,7 +393,7 @@ for file in inputfiles:
             ItsATrap1 = True
         else:
             w.write("Checking for MCM Crash....................All Clear")
-        
+
         w.write("Generic Crash test removed because Buffout 4 no longer uses tbbmalloc.dll")
 
         if data.counts.papyrus1 or data.counts.papyrus2:
@@ -410,56 +413,56 @@ for file in inputfiles:
             ItsATrap1 = True
         else:
             w.write("Checking for BA2 Limit Crash..............All Clear")
-        
+
         if data.counts.pathing1 or data.counts.pathing2 or data.counts.pathing3:
             w.write("Checking for NPC Pathing Crash............CULPRIT FOUND!")
             w.write(f"> Priority Level: [3] | Detected number of PathingCell | BSPathBuilder | PathManagerServer : {data.counts.pathing1} | {data.counts.pathing2} | {data.counts.pathing3}")
             ItsATrap1 = True
         else:
             w.write("Checking for NPC Pathing Crash............All Clear")
-        
+
         if data.counts.loosefilestream:
             w.write("Checking for Object Model Crash...........CULPRIT FOUND!")
             w.write(f"> Priority Level: [4] | Detected number of LooseFileStream : {data.counts.loosefilestream}")
             ItsATrap1 = True
         else:
             w.write("Checking for Object Model Crash...........All Clear")
-        
+
         if data.counts.plugin1 or data.counts.plugin2 or data.counts.plugin3:
             w.write("Checking for Plugin Limit Crash...........CULPRIT FOUND!")
             w.write(f"> Priority Level: [5] | Detected number of ObjectBindPolicy | BSMemStorage | DataFileHandleReaderWriter : {data.counts.plugin1} | {data.counts.plugin2} | {data.counts.plugin3}")
             ItsATrap1 = True
         else:
             w.write("Checking for Plugin Limit Crash...........All Clear")
-        
+
         if data.counts.console1 or data.counts.console2 or data.counts.console3:
             w.write("Checking for Console Command Crash........CULPRIT FOUND!")
             w.write(f"> Priority Level: [1] | Detected number of SysWindowCompileAndRun | BSResourceNiBinaryStream | ConsoleLogPrinter : {data.counts.console1} | {data.counts.console2} | {data.counts.console3}")
             ItsATrap1 = True
         else:
             w.writable("Checking for Console Command Crash........All Clear")
-        
+
         if data.counts.particle:
             w.write("Checking for Particle Effects Crash.......CULPRIT FOUND!")
             w.write(f"> Priority Level: [4] | Detected number of ParticleSystem : {data.counts.particle}")
             ItsATrap1 = True
         else:
             w.write("Checking for Particle Effects Crash.......All Clear")
-        
+
         if data.counts.anim1 or data.counts.anim2 or data.counts.anim3 or data.counts.anim4:
             w.write("Checking for Weapon Animation Crash.......CULPRIT FOUND!")
             w.write(f"> Priority Level: [5] | Detected number of hkbVariableBindingSet | hkbHandIkControlsModifier | hkbBehaviorGraph | hkbModifierList : {data.counts.anim1} | {data.counts.anim2} | {data.counts.anim3} | {data.counts.anim4}")
             ItsATrap1 = True
         else:
             w.write("Checking for Weapon Animation Crash.......All Clear")
-        
+
         if data.counts.texture1 or data.counts.texture2:
             w.write("Checking for Corrupted Textures Crash.....CULPRIT FOUND!")
             w.write(f"> Priority Level: [3] | Detected number of Create2DTexture | DefaultTexture : {data.counts.texture1} | {data.counts.texture2}")
             ItsATrap1 = True
         else:
             w.write("Checking for Corrupted Textures Crash.....All Clear")
-        
+
         """Did anything trigger the trap?"""
         w.write("-----")
         if ItsATrap1:
@@ -492,7 +495,7 @@ for file in inputfiles:
                 w.write(data.write_bad_mod(line, "DamageThresholdFramework.esm", "DAMAGE THRESHOLD FRAMEWORK"))
                 w.write("-----")
                 ItsATrap2 = True
-            
+
             if data.is_bad_mod(line, "EPO"):
                 w.write(data.write_bad_mod(line, "EPO", "EXTREME PARTICLES OVERHAUL"))
                 w.write("-----")
@@ -502,7 +505,7 @@ for file in inputfiles:
                 w.write(data.write_bad_mod(line, "SakhalinWasteland", "FALLOUT SAKHALIN"))
                 w.write("-----")
                 ItsATrap2 = True
-            
+
             if data.is_bad_mod(line, "76HUD"):
                 w.write(data.write_bad_mod(line, "76HUD", "HUD76 HUD REPLACER"))
                 w.write("-----")
@@ -512,17 +515,17 @@ for file in inputfiles:
                 w.write(data.write_bad_mod(line, "Scrap Everything", "SCRAP EVERYTHING"))
                 w.write("-----")
                 ItsATrap2 = True
-            
+
             if data.is_bad_mod(line, "SOTS"):
                 w.write(data.write_bad_mod(line, "SOTS", "SOUTH OF THE SEA"))
                 w.write("-----")
                 ItsATrap2 = True
-            
+
             if data.is_bad_mod(line, "(STO) NO"):
                 w.write(data.write_bad_mod(line, "(STO) NO", "STALKER TEXTURE OVERHAUL"))
                 w.write("-----")
                 ItsATrap2 = True
-            
+
             if data.is_bad_mod(line, "TacticalReload.esm"):
                 w.write(data.write_bad_mod(line, "TacticalReload.esm", "TACTICAL RELOAD"))
                 w.write("-----")
@@ -532,18 +535,18 @@ for file in inputfiles:
                 w.write(data.write_bad_mod(line, "TacticalTablet.esp", "TACTICAL TABLET"))
                 w.write("-----")
                 ItsATrap2 = True
-            
+
             if data.is_bad_mod(line, "True Nights"):
                 w.write(data.write_bad_mod(line, "True Nights", "TRUE NIGHTS"))
                 w.write("-----")
                 ItsATrap2 = True
-            
+
             if data.is_bad_mod(line, "WeaponsFramework"):
                 w.write(data.write_bad_mod(line, "WeaponsFramework", "WEAPONS FRAMEWORK BETA"))
                 w.write("-----")
                 ItsATrap2 = True
-            
-        if data.counts.classicholsteredweapons in range(1,2) and not (data.counts.uniqueplayer or data.counts.highheels or data.counts.cbpdll or data.counts.bodynif):
+
+        if data.counts.classicholsteredweapons in range(1, 2) and not (data.counts.uniqueplayer or data.counts.highheels or data.counts.cbpdll or data.counts.bodynif):
             w.write("FOUND CLASSIC HOLSTERED WEAPONS, BUT...")
             w.write("AUTOSCAN CANNOT ACCURATELY DETERMINE IF CHW CAUSED THIS CRASH OR NOT.")
             w.write("You should open CHW's ini file and change IsHolsterVisibleOnNPCs to 0.")
@@ -568,7 +571,7 @@ for file in inputfiles:
             w.write("You should disable CHW to further confirm this.")
             w.write("-----")
             ItsATrap2 = True
-        
+
         if ItsATrap2:
             w.write("CAUTION: ANY ABOVE DETECTED MODS HAVE A MUCH HIGHER CHANCE TO CRASH YOUR GAME!")
             w.write("You can disable any/all of them temporarily to confirm they caused this crash.")
@@ -579,7 +582,7 @@ for file in inputfiles:
             w.write("-----")
 
         ItsATrap3 = False
-        
+
         for line in data.lines:
             if data.is_bad_mod(line, "ArmorKeywords.esm"):
                 w.write(data.write_bad_mod(line, "ArmorKeywords.esm", "ARMOR AND WEAPON KEYWORDS"))
@@ -602,7 +605,7 @@ for file in inputfiles:
                 w.write("Recommended Patch: https://www.nexusmods.com/fallout4/mods/48637?tab=files")
                 w.write("-----")
                 ItsATrap3 = True
-            
+
             if data.is_bad_mod(line, "M8r_Item_Tags"):
                 w.write(data.write_bad_mod(line, "M8r_Item_Tags", "FallUI Item Sorter"))
                 w.write("This is a premade item tagging / sorting patch that will crash or conflict in all kinds of situations.")
@@ -611,7 +614,7 @@ for file in inputfiles:
                 w.write("Link: https://www.nexusmods.com/fallout4/mods/48826?tab=files")
                 w.write("-----")
                 ItsATrap3 = True
-            
+
             if data.is_bad_mod(line, "Fo4FI_FPS_fix") or data.is_bad_mod(line, "BostonFPSFix"):
                 if data.is_bad_mod(line, "Fo4FI_FPS_fix"):
                     w.write(data.write_bad_mod(line, "Fo4FI_FPS_fix", "FO4FI FPS FIX"))
@@ -638,21 +641,21 @@ for file in inputfiles:
                 w.write("Advised Fix: Enable the mod only after leaving Vault 111. Existing saves shouldn't be affected.")
                 w.write("-----")
                 ItsATrap3 = True
-            
+
             if data.is_bad_mod(line, "CapsWidget"):
                 w.write(data.write_bad_mod(line, "CapsWidget", "Hud Caps"))
                 w.write("Often breaks the Save / Quicksave function due to poor script implementation.")
                 w.write("Advised Fix: Either remove HUD Caps or try saving the game through ingame console commands.")
                 w.write("-----")
                 ItsATrap3 = True
-            
+
             if data.is_bad_mod(line, "LegendaryModification.esp"):
                 w.write(data.write_bad_mod(line, "LegendaryModification.esp", "Legendary Modification"))
                 w.write("This is an old mod that's plagued with all kinds of bugs and crashes.")
                 w.write("Better Alternative: https://www.nexusmods.com/fallout4/mods/55503?tab=files")
                 w.write("-----")
                 ItsATrap3 = True
-            
+
             if data.is_bad_mod(line, "MoreUniques"):
                 w.write(data.write_bad_mod(line, "MoreUniques", "More Uniques Expansion"))
                 w.write("Causes crashes due to broken precombines and compatibility issues with other weapon mods.")
@@ -666,21 +669,21 @@ for file in inputfiles:
                 w.write("Advised Fix: Use Version 007 or remove AWKCR and switch to Equipment and Crafting Overhaul.")
                 w.write("-----")
                 ItsATrap3 = True
-            
+
             if data.is_bad_mod(line, "walkers"):
                 w.write(data.write_bad_mod(line, "walkers", "Zombie Walkers"))
                 w.write("Version 2.6.3 contains a resurrection script that will regularly crash the game.")
                 w.write("Advised Fix: Use one of the 3.0 Beta versions instead. A new game might be required.")
                 w.write("-----")
                 ItsATrap3 = True
-        
+
         if data.counts.fallsouls:
             w.write("FOUND FALLSOULS UNPAUSED GAME MENUS!")
             w.write("Occasionally breaks the Quests menu, can crash while changing MCM settings.")
             w.write("Advised Fix: Toggle PipboyMenu in FallSouls MCM settings or completely reinstall the mod.")
             w.write("-----")
             ItsATrap3 = True
-        
+
         if not ItsATrap3:
             w.write("Autoscan found no problematic mods with alternatives and solutions.")
             w.write("-----")
@@ -694,19 +697,19 @@ for file in inputfiles:
             if data.is_bad_mod(line, "Beyond the Borders"):
                 w.write(data.write_bad_mod_opc(line, "Beyond the Borders"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "Deadly Commonwealth Expansion"):
                 w.write(data.write_bad_mod_opc(line, "Deadly Commonwealth Expansion"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "Dogmeat and Strong Armor"):
                 w.write(data.write_bad_mod_opc(line, "Dogmeat and Strong Armor"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "DoYourDamnJobCodsworth"):
                 w.write(data.write_bad_mod_opc(line, "Do Your Damn Job Codsworth"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "ConcordEXPANDED"):
                 w.write(data.write_bad_mod_opc(line, "Concord Expanded"))
                 ItsATrap4 = True
@@ -718,43 +721,43 @@ for file in inputfiles:
             if data.is_bad_mod(line, "GlowingSeaEXPANDED"):
                 w.write(data.write_bad_mod_opc(line, "Glowing Sea Expanded"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "SalemEXPANDED"):
                 w.write(data.write_bad_mod_opc(line, "Salem Expanded"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "SwampsEXPANDED"):
                 w.write(data.write_bad_mod_opc(line, "Swamps Expanded"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "_hod"):
                 w.write(data.write_bad_mod_opc(line, "Hearts of Darkness"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "ImmersiveBeantown"):
                 w.write(data.write_bad_mod_opc(line, "Immersive Beantown Brewery"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "CovenantComplex"):
                 w.write(data.write_bad_mod_opc(line, "Immersive Covenant Compound"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "GunnersPlazaInterior"):
                 w.write(data.write_bad_mod_opc(line, "Immersive Gunners Plaza"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "ImmersiveHubCity"):
                 w.write(data.write_bad_mod_opc(line, "Immersive Hub City"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "Immersive_Lexington"):
                 w.write(data.write_bad_mod_opc(line, "Immersive & Extended Lexington"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "Immersive Nahant"):
                 w.write(data.write_bad_mod_opc(line, "Immersive & Extended Nahant"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "Immersive S Boston"):
                 w.write(data.write_bad_mod_opc(line, "Immersive Military Checkpoint"))
                 ItsATrap4 = True
@@ -770,51 +773,51 @@ for file in inputfiles:
                 w.write("I will update when a new version comes out.")
                 w.write("------")
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "atlanticofficesf23"):
                 w.write(data.write_bad_mod_opc(line, "Lost Building of Atlantic"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "Minutemen Supply Caches"):
                 w.write(data.write_bad_mod_opc(line, "Minutemen Supply Caches"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "moreXplore"):
                 w.write(data.write_bad_mod_opc(line, "MoreXplore"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "NEST_BUNKER_PROJECT"):
                 w.write(data.write_bad_mod_opc(line, "NEST Survival Bunkers"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "Raider Children"):
                 w.write(data.write_bad_mod_opc(line, "Raider Children and Other Horrors"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "sectorv"):
                 w.write(data.write_bad_mod_opc(line, "Sector Five - Rise and Fall"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "SettlementShelters"):
                 w.write(data.write_bad_mod_opc(line, "Settlement Shelters"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "subwayrunnnerdynamiclighting"):
                 w.write(data.write_bad_mod_opc(line, "Subway Runner"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "3DNPC_FO4Settler.esp"):
                 w.write(data.write_bad_mod_opc(line, "Settlers of the Commonwealth"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "3DNPC_FO4.esp"):
                 w.write(data.write_bad_mod_opc(line, "Tales of the Commonwealth"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "The Hollow"):
                 w.write(data.write_bad_mod_opc(line, "The Hollow"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "nvvault1080"):
                 w.write(data.write_bad_mod_opc(line, "Vault 1080"))
                 ItsATrap4 = True
@@ -822,15 +825,15 @@ for file in inputfiles:
             if data.is_bad_mod(line, "Vertibird Faction Paint Schemes"):
                 w.write(data.write_bad_mod_opc(line, "Vertibird Faction Paint Schemes"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "MojaveImports"):
                 w.write(data.write_bad_mod_opc(line, "Wasteland Imports"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "Firelance2.5"):
                 w.write(data.write_bad_mod_opc(line, "Xander's Aid"))
                 ItsATrap4 = True
-            
+
             if data.is_bad_mod(line, "zxcMicroAdditions"):
                 w.write(data.write_bad_mod_opc(line, "ZXC Micro Additions"))
                 ItsATrap4 = True
@@ -853,7 +856,7 @@ for file in inputfiles:
             w.write("MAKE SURE THAT F4SE IS CORRECTLY INSTALLED!")
             w.write("Link: https://f4se.silverlock.org/")
             w.write("-----")
-        
+
         for line in data.lines:
             if len(line) >= 6 and "]" in line[4]:
                 #line = line[6:]
@@ -867,7 +870,7 @@ for file in inputfiles:
             if len(line) >= 11 and "]" in line[9]:
                 #line = line[11:]
                 data.allplugins.append(line.strip())
-        
+
         w.write("LIST OF (POSSIBLE) PLUGIN CULRIPTS:")
 
         for line in data.lines:
@@ -875,8 +878,8 @@ for file in inputfiles:
                 line = line.replace("File: ", "")
                 line = line.replace('"', '')
                 data.detectedplugins.append(line.strip())
-        
-        data.detectedplugins = list(dict.fromkeys(data.detectedplugins)) 
+
+        data.detectedplugins = list(dict.fromkeys(data.detectedplugins))
         if "Fallout4.esm" in data.detectedplugins:
             data.detectedplugins.remove("Fallout4.esm")
         if "DLCCoast.esm" in data.detectedplugins:
@@ -899,7 +902,7 @@ for file in inputfiles:
         PL_strings = data.allplugins
         PL_substrings = data.detectedplugins
         PL_result = []
-        
+
         for string in PL_strings:
             PL_matches = []
             for substring in PL_substrings:
@@ -908,7 +911,7 @@ for file in inputfiles:
             if PL_matches:
                 PL_result.append(PL_matches)
                 w.write(f"- {' '.join(PL_matches)}")
-        
+
         if not PL_result:
             w.write("AUTOSCAN COULDN'T FIND ANY PLUGIN CULRIPTS")
             w.write("-----")
@@ -917,7 +920,7 @@ for file in inputfiles:
             w.write("These Plugins were caught by Buffout 4 and some of them might be responsible for this crash.")
             w.write("You can try disabling any listed plugins and recheck your game, though this method is unreliable.")
             w.write("-----")
-        
+
         for line in data.lines:
             if 'Form ID: ' in line:
                 line = line.replace("0x", "")
