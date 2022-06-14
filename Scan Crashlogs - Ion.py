@@ -126,7 +126,7 @@ class Data:
     detectedformids: list[str] = field(default_factory=list)
     allplugins: list[str] = field(default_factory=list)
     onlyids: list[str] = field(default_factory=list)
-    logfile: InitVar[pathlib.Path] | InitVar[None] = None
+    #logfile: InitVar[pathlib.Path] | InitVar[None] = None
 
     def __post_init__(self, logfile: pathlib.Path):
         self.log = logfile.read_text()
@@ -216,7 +216,10 @@ class Data:
 
 
 for file in inputfiles:
+    print("Anything")
     data = Data(logfile=file)
+    print(asdict(data))
+    print(file)
     if not data.counts.unofficialpatch and not data.counts.loadorder:
         print("Could not load the plugin list for this log file, skipping this file.")
         continue
