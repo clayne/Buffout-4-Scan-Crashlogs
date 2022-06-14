@@ -4,7 +4,6 @@ import os
 import sys
 import random
 import pathlib
-import argparse
 
 from dataclasses import dataclass, asdict, InitVar, field
 
@@ -21,30 +20,12 @@ print("Hello World! | Crash Log Auto-Scanner | Version 2.00 | Fallout 4")
 print("PERFORMING SCAN..........................................................")
 
 which_hint = random_hints[random.randrange(1, 8)]
-
-parser = argparse.ArgumentParser(
-    description="Parser script for Buffout4 Crash Logs"
-)
-parser.add_argument(
-    '--inputfile',
-    '-i',
-    dest="input",
-    nargs="?",
-    action="append",
-    help="Specify a specific file to parse (optional), use multiple times for multiple files, will scan all unscanned log files in current directory otherwise."
-)
-
-commandline: argparse.Namespace = parser.parse_args()
 b4_latest: str = "Buffout 4 v1.26.2"
 
 """Using Data Classes instead of variables"""
 
-if commandline.input and len(commandline.input) >= 1:
-    inputfiles: list[pathlib.Path] = []
-    for i in commandline.input:
-        inputfiles.append(pathlib.path(i))
-else:
-    inputfiles: list[pathlib.Path] = pathlib.Path.cwd().glob("./crash-*.log")
+inputfiles: list[pathlib.Path] = pathlib.Path.cwd().glob("./crash-*.log")
+
 for i in inputfiles:
     print(i)
 
