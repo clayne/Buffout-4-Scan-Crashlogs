@@ -37,8 +37,8 @@ statL = {"scanned": 0, "incomplete": 0, "failed": 0, "veryold": 0}
 statB = {"Achieve": 0, "Memory": 0, "F4EE": 0, "F4SE": 0, "NoMessage": 0}
 # KNOWN CRASH MESSAGES
 statC = {"ActiveEffect": 0, "AnimationPhysics": 0, "Audio": 0, "BA2Limit": 0, "BGSM": 0, "BitDefender": 0, "BodyPhysics": 0, "ConsoleCommands": 0, "CorruptedTex": 0,
-"NVDriver": 0, "Null": 0, "OverFlow": 0, "Papyrus": 0, "Particles": 0, "PluginLimit": 0, "Rendering": 0, "Texture": 0, "CorruptedAudio": 0, "LOD": 0,
-"Decal": 0, "MO2Unp": 0, "VulkamMem": 0, "VulkanSet": 0, "DLL": 0, "Equip": 0, "Generic": 0, "GridScrap": 0, "NIF": 0}
+         "NVDriver": 0, "Null": 0, "OverFlow": 0, "Papyrus": 0, "Particles": 0, "PluginLimit": 0, "Rendering": 0, "Texture": 0, "CorruptedAudio": 0, "LOD": 0,
+         "Decal": 0, "MO2Unp": 0, "VulkamMem": 0, "VulkanSet": 0, "DLL": 0, "Equip": 0, "Generic": 0, "GridScrap": 0, "NIF": 0}
 # UNSOLVED CRASH MESSAGES
 statU = {"Precomb": 0, "Player": 0, "Save": 0, "HUDAmmo": 0, "Patrol": 0, "Projectile": 0, "Item": "0", "Input": 0, "INI": 0}
 # KNOWN CRASH CONDITIONS
@@ -201,7 +201,7 @@ for file in logs:
             print("NOTICE: Auto-Scanner must be run by original user for correct detection.")
             print("-----")
 """
-        if (counts["Achievements"] and counts["AchivemenentMod"]) >= 1 or (counts["AchievementMod"] and counts["Survival_Mod"]) >= 1:
+        if (counts["Achievements"] and counts["Achievementmod"]) >= 1 or (counts["Achievementmod"] and counts["Survival_Mod"]) >= 1:
             print("CAUTION: Achievements Mod and/or Unlimited Survival Mode is installed, but Achievements parameter is set to TRUE")
             print("FIX: Open Buffout4.toml and change Achievements parameter to FALSE, this prevents conflicts with Buffout 4.")
             print("-----")
@@ -379,7 +379,7 @@ for file in logs:
         counts["0x8"] = crash_message.count("0x00000008")
         counts["0x14"] = crash_message.count("0x00000014")
         # *OTHER
-        #counts["ObjectBindPolicy] = crash_message.count("ObjectBindPolicy")
+        # counts["ObjectBindPolicy] = crash_message.count("ObjectBindPolicy")
 
         # ===========================================================
 
