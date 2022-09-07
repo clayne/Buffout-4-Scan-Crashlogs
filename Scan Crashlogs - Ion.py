@@ -53,8 +53,7 @@ print("=========================================================================
 print("You should place this script into your Documents\My Games\Fallout4\F4SE folder.")
 print("(This is where Buffout 4 crash log files are generated after the game crashes.)")
 print("===============================================================================")
-print("CAUTION: Crash Log Auto-Scanner might not work correctly with Win 7 / Python 2.")
-print("To fix, install this Python version: https://github.com/NulAsh/cpython/releases")
+print("CAUTION: Crash Log Auto-Scanner will not work correctly with Win 7 / Python 2.")
 print("===============================================================================")
 # Check 5 most likely drives to see where Documents\My Games\Fallout4 exists.
 User_Path = os.getenv('HOMEPATH')
