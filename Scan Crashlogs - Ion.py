@@ -38,7 +38,8 @@ statB = {"Achieve": 0, "Memory": 0, "F4EE": 0, "F4SE": 0, "NoMessage": 0}
 # KNOWN CRASH MESSAGES
 statC = {"ActiveEffect": 0, "AnimationPhysics": 0, "Audio": 0, "BA2Limit": 0, "BGSM": 0, "BitDefender": 0, "BodyPhysics": 0, "ConsoleCommands": 0, "CorruptedTex": 0,
          "NVDriver": 0, "Null": 0, "OverFlow": 0, "Papyrus": 0, "Particles": 0, "PluginLimit": 0, "Rendering": 0, "Texture": 0, "CorruptedAudio": 0, "LOD": 0,
-         "Decal": 0, "MO2Unp": 0, "VulkamMem": 0, "VulkanSet": 0, "DLL": 0, "Equip": 0, "Generic": 0, "GridScrap": 0, "NIF": 0}
+         "Decal": 0, "MO2Unp": 0, "VulkamMem": 0, "VulkanSet": 0, "DLL": 0, "Equip": 0, "Generic": 0, "GridScrap": 0, "NIF": 0, "NPCPathing": 0, "Overflow": 0, "BadMath": 0, "MCM": 0,
+         "LoadOrder": "0", "NVDebris": 0, "NVDriver": 0, "Invalidation": 0}
 # UNSOLVED CRASH MESSAGES
 statU = {"Precomb": 0, "Player": 0, "Save": 0, "HUDAmmo": 0, "Patrol": 0, "Projectile": 0, "Item": "0", "Input": 0, "INI": 0}
 # KNOWN CRASH CONDITIONS
@@ -47,7 +48,7 @@ statM_CHW = 0
 # SteamAPI_OG = 206760 | Fallout4_OG = 65503104
 # ==========================================================
 
-print("Hello World! | Crash Log Auto-Scanner | Version 4.10-Ion | Fallout 4")
+print("Hello World! | Crash Log Auto-Scanner | Version 1.0-Ion (based on Poet's version 4.10) | Fallout 4")
 print("CRASH LOGS MUST BE .log AND IN THE SAME FOLDER WITH THIS SCRIPT!")
 print("===============================================================================")
 print("You should place this script into your Documents\My Games\Fallout4\F4SE folder.")
@@ -110,7 +111,7 @@ for file in logs:
         crashlog = str(f"{logname}.log")
         print(f"{logname}.log")
         print("This crash log was automatically scanned.")
-        print("VER 4.10-Ion | MIGHT CONTAIN FALSE POSITIVES.")
+        print("VER 1.0-Ion (based on Poet's version 4.10) | MIGHT CONTAIN FALSE POSITIVES.")
         print("====================================================")
 
         # OPEN FILE TO CHECK INDEXES AND EVERYTHING ELSE.
