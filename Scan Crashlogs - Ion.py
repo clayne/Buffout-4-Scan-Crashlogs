@@ -154,7 +154,7 @@ for file in logs:
         # Writing to TOML files in Python makes me gauge my eyes out.
         counts["Survival_Mod"] = crash_message.count("UnlimitedSurvivalMode.dll")
         counts["Achievements"] = crash_message.count("Achievements: true")
-        counts["AchivemenentMod"] = crash_message.count("achievements.dll")
+        counts["Achievementmod"] = crash_message.count("achievements.dll")
         counts["Buffout_MemoryManager"] = crash_message.count("MemoryManager: true")
         counts["Baka"] = crash_message.count("BakaScrapHeap.dll")
         counts["LooksMenuCompat"] = crash_message.count("F4EE: false")
