@@ -5,8 +5,6 @@ import string
 import subprocess
 import sys
 import time
-from itertools import count
-from pathlib import Path
 
 # > auto update pip and install packages:
 subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', 'pip'])
