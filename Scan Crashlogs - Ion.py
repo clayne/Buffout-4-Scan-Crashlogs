@@ -103,6 +103,7 @@ orig_stdout = sys.stdout
 
 logs = glob.glob("crash-*.log") + glob.glob("crash-*.log.txt")  # second is for a hypothetical edge case where a browser insists on adding a .txt extension
 
+
 for file in logs:  # This if statement only exists so that I don't have to re-indent hundreds of lines of code.
     logname = str(file)[:len(str(file)) - 4]
     sys.stdout = open(f"{logname}-AUTOSCAN.md", "w", encoding='utf-8-sig', errors="ignore")
@@ -382,25 +383,24 @@ for file in logs:  # This if statement only exists so that I don't have to re-in
 
     # ===========================================================
 
-    if int(counts["Overflow"]) >= 1:
+    if counts["Overflow"] >= 1:
         print("Checking for Stack Overflow Crash.........CULPRIT FOUND!")
         print("> Priority Level: [5]")
         Buffout_Trap = 0
         statC["Overflow"] += 1
-
-    if int(counts["ActiveEffect"]) >= 1:
+    if counts["ActiveEffect"] >= 1:
         print("Checking for Active Effects Crash.........CULPRIT FOUND!")
         print("> Priority Level: [5]")
         Buffout_Trap = 0
         statC["ActiveEffect"] += 1
 
-    if int(counts["BadMath"]) >= 1:
+    if counts["BadMath"] >= 1:
         print("Checking for Bad Math Crash...............CULPRIT FOUND!")
         print("> Priority Level: [5]")
         Buffout_Trap = 0
         statC["BadMath"] += 1
 
-    if int(counts["Null"]) >= 1:
+    if counts["Null"] >= 1:
         print("Checking for Null Crash...................CULPRIT FOUND!")
         print("> Priority Level: [5]")
         Buffout_Trap = 0
@@ -415,7 +415,7 @@ for file in logs:  # This if statement only exists so that I don't have to re-in
         Buffout_Trap = 0
         statC["DLL"] += 1
     # ===========================================================
-    if (counts["BGSLocation"] and counts["BGSQueued"]) >= 1:
+    if (counts["BGSLocation"] >= 1 and counts["BGSQueued"] >= 1):
         print("Checking for LOD Crash....................CULPRIT FOUND!")
         print(f'> Priority Level: [5] | BGSLocation : {counts["BGSLocation"]} | BGSQueuedTerrainInitialLoad : {counts["BGSQueued"]}')
         Buffout_Trap = 0
@@ -1214,7 +1214,8 @@ for file in logs:  # This if statement only exists so that I don't have to re-in
 
     list_DETFORMIDS = list(dict.fromkeys(list_DETFORMIDS))
     for elem in list_DETFORMIDS:
-        print(elem)
+        if elem[0:1] != "FF" and elem[0:1] != "ff":
+            print(elem)
 
     if not list_DETFORMIDS:
         print("AUTOSCAN COULDN'T FIND ANY FORM ID CULRIPTS")
@@ -1265,6 +1266,7 @@ for file in logs:  # This if statement only exists so that I don't have to re-in
     #    shutil.move(crashlog, unsolvedCRASH_path)
     #    unsolvedSCAN_path = "CL-UNSOLVED/" + logname + "-AUTOSCAN.md"
     #    shutil.move(logname + "-AUTOSCAN.md", unsolvedSCAN_path)
+
 
 # dict.fromkeys -> Command to create a dictionary, using items in a list as keys.
 # This automatically removes duplicates as dictionaries cannot have duplicate keys.
